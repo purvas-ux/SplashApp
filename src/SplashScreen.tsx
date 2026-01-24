@@ -1,18 +1,35 @@
 import React from 'react';
 import { StyleSheet, View, StatusBar } from 'react-native';
 import LottieView from 'lottie-react-native';
+import { fetchSplashAnimation } from './services/contentful';
 
 const SplashScreen = () => {
+    const [animationSource, setAnimationSource] = React.useState<any>(null);
+
+    React.useEffect(() => {
+        const loadContentfulAnimation = async () => {
+            const entryId = '7vbv4yHqGqQIShCPEwK7zl';
+            const source = await fetchSplashAnimation(entryId);
+            if (source) {
+                setAnimationSource(source);
+            }
+        };
+
+        loadContentfulAnimation();
+    }, []);
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#0f261f" />
-            <LottieView
-                source={require('./json/animate.json')}
-                autoPlay
-                loop={false}
-                style={styles.animation}
-                resizeMode="contain"
-            />
+            {animationSource ? (
+                <LottieView
+                    source={animationSource}
+                    autoPlay
+                    loop={false}
+                    style={styles.animation}
+                    resizeMode="contain"
+                />
+            ) : null}
         </View>
     );
 };
